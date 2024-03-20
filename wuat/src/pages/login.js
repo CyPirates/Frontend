@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 import logo from "../assets/images/wuat_logo.png"
-import CustomInput from "../components/login/text_input";
+import CustomInput from "../components/login/TextInput";
 import { Navigate, Link} from "react-router-dom";
 
 function LoginPage() {
