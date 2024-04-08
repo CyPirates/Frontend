@@ -1,26 +1,19 @@
+import TopNavBar from "../../components/common/TopNavBar";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
 import styled from "styled-components";
-import { useState } from "react";
-
-import TopNavBar from "../../components/common/TopNavBar";
-import { Link } from "react-router-dom";
+import ParseDay from "../../utils/schedule/ParseDay";
+import { yearArray, monthArray } from "../../constants/YearMonth";
 
 function CalendarPage() {
+    const navigate = useNavigate();
     const today = new Date();
     const [year, setYear] = useState(today.getFullYear());
     const [month, setMonth] = useState(today.getMonth());
     const [selectedDay, setSelectedDay] = useState(today);
-
-    const years = [];
-    for (let y = 2024; y <= 2050; y++) {
-        years.push(y);
-    }
-
-    const months = [];
-    for (let m = 1; m <= 12; m++) {
-        months.push(m);
-    }
 
     const handleYearChange = (event) => {
         const year = parseInt(event.target.value);
@@ -30,6 +23,11 @@ function CalendarPage() {
     const handleMonthChange = (event) => {
         const month = parseInt(event.target.value);
         setMonth(month - 1);
+    }
+
+    const handleNavigate = (day) => {
+        const parsedDay = ParseDay(day);
+        navigate(`/schedule/${parsedDay.year}+${parsedDay.month}+${parsedDay.day}`)
     }
 
     return (
@@ -43,7 +41,7 @@ function CalendarPage() {
                         className="year-select"
                     >
 
-                        {years.map((year) => (
+                        {yearArray.map((year) => (
                             <option key={year} value={year}>
                                 {year}
                             </option>
@@ -56,7 +54,7 @@ function CalendarPage() {
                         className="year-select"
                     >
 
-                        {months.map((month) => (
+                        {monthArray.map((month) => (
                             <option key={month} value={month}>
                                 {month}
                             </option>
@@ -65,7 +63,7 @@ function CalendarPage() {
                     <p>월</p>
                 </DateContainer>
                 <Calendar
-                    onClickDay={(value)=> setSelectedDay(value)}
+                    onClickDay={(value) => setSelectedDay(value)}
                     showNavigation={false}
                     activeStartDate={new Date(year, month)}
                     calendarType="gregory" // 일요일 부터 시작
@@ -74,7 +72,8 @@ function CalendarPage() {
                     prev2Label={null} // -1년 & -10년 이동 버튼 숨기기
                     minDetail="year" // 10년단위 년도 숨기기
                 />
-                <Link to={'/day'}>{selectedDay.toLocaleDateString()}</Link>
+                {selectedDay.toLocaleDateString()}
+                <button onClick={() => handleNavigate(selectedDay)}>test</button>
             </Container>
 
         </>
@@ -88,6 +87,7 @@ const Container = styled.div`
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    margin-top: 50px;
     
     .react-calendar {
     width: 90%;
